@@ -149,7 +149,7 @@ Resources:
       SecurityGroupIds:
         - !Ref EC2SecurityGroup
       SubnetId: !Ref PublicSubnet
-      ImageId: ami-0c55b159cbfafe1f0  # Replace with a valid AMI ID for your region
+      ImageId: ami-0134b2a3fc637be47
       Tags:
         - Key: Name
           Value: MyEC2Instance

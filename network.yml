@@ -144,12 +144,12 @@ Resources:
   EC2Instance:
     Type: AWS::EC2::Instance
     Properties:
-      InstanceType: t2.micro
+      InstanceType: t3.nano
       IamInstanceProfile: !Ref InstanceProfile
       SecurityGroupIds:
         - !Ref EC2SecurityGroup
       SubnetId: !Ref PublicSubnet
-      ImageId: ami-0134b2a3fc637be47
+      ImageId: ami-0ef29ab52ff72213b
       Tags:
         - Key: Name
           Value: MyEC2Instance

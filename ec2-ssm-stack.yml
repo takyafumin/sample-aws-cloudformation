@@ -1,11 +1,12 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: CloudFormation template for an EC2 instance with SSM support
+Description: CloudFormation template for EC2 instance with SSM support
+
+Parameters:
+  InstanceProfileName:
+    Type: String
+    Description: "The name of the Instance Profile for EC2 instance"
 
 Resources:
-
-  # ------------------------------------------------------------#
-  #  VPC
-  # ------------------------------------------------------------#
   MyVPC:
     Type: AWS::EC2::VPC
     Properties:
@@ -16,9 +17,6 @@ Resources:
         - Key: Name
           Value: MyVPC
 
-  # ------------------------------------------------------------#
-  #  PublicSubnet
-  # ------------------------------------------------------------#
   PublicSubnet:
     Type: AWS::EC2::Subnet
     Properties:
@@ -29,9 +27,6 @@ Resources:
         - Key: Name
           Value: PublicSubnet
 
-  # ------------------------------------------------------------#
-  #  InternetGateway
-  # ------------------------------------------------------------#
   InternetGateway:
     Type: AWS::EC2::InternetGateway
     Properties:
@@ -39,18 +34,12 @@ Resources:
         - Key: Name
           Value: MyInternetGateway
 
-  # ------------------------------------------------------------#
-  #  AttachGateway
-  # ------------------------------------------------------------#
   AttachGateway:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
       VpcId: !Ref MyVPC
       InternetGatewayId: !Ref InternetGateway
 
-  # ------------------------------------------------------------#
-  #  PublicRouteTable
-  # ------------------------------------------------------------#
   PublicRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
@@ -59,9 +48,6 @@ Resources:
         - Key: Name
           Value: PublicRouteTable
 
-  # ------------------------------------------------------------#
-  #  PublicRoute
-  # ------------------------------------------------------------#
   PublicRoute:
     Type: AWS::EC2::Route
     Properties:
@@ -69,18 +55,12 @@ Resources:
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref InternetGateway
 
-  # ------------------------------------------------------------#
-  #  SubnetRouteTableAssociation
-  # ------------------------------------------------------------#
   SubnetRouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId: !Ref PublicSubnet
       RouteTableId: !Ref PublicRouteTable
 
-  # ------------------------------------------------------------#
-  #  EC2SecurityGroup
-  # ------------------------------------------------------------#
   EC2SecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -95,22 +75,15 @@ Resources:
           FromPort: 443
           ToPort: 443
           CidrIp: 0.0.0.0/0  # HTTPS access
-        - IpProtocol: tcp
-          FromPort: 22
-          ToPort: 22
-          CidrIp: 0.0.0.0/0  # SSH access (for initial setup)
       SecurityGroupEgress:
         - IpProtocol: -1
           CidrIp: 0.0.0.0/0
 
-  # ------------------------------------------------------------#
-  #  EC2Instance
-  # ------------------------------------------------------------#
   EC2Instance:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t3.nano
-      IamInstanceProfile: !ImportValue EC2SSMRole-InstanceProfileName  # クロススタック参照を使用
+      IamInstanceProfile: !ImportValue EC2SSMRoleInstanceProfileName
       SecurityGroupIds:
         - !Ref EC2SecurityGroup
       SubnetId: !Ref PublicSubnet

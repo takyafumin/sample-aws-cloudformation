@@ -1,4 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation template for EC2 SSM Role and Instance Profile
+
 Resources:
   EC2SSMRole:
     Type: "AWS::IAM::Role"
@@ -22,7 +24,7 @@ Resources:
         - Ref: "EC2SSMRole"
 
 Outputs:
-  EC2SSMRoleArn:
-    Value: !GetAtt EC2SSMRole.Arn
-  EC2InstanceProfileName:
+  EC2SSMRoleInstanceProfileName:
     Value: !Ref EC2InstanceProfile
+    Export:
+      Name: EC2SSMRoleInstanceProfileName

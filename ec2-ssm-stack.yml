@@ -2,11 +2,18 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: CloudFormation template for EC2 instance with SSM support
 
 Parameters:
+  # ------------------------------------------------------------#
+  #  IAM Role Name (EC2-SSM-InstanceProfile)
+  # ------------------------------------------------------------#
   InstanceProfileName:
     Type: String
     Description: "The name of the Instance Profile for EC2 instance"
+    Default: "EC2-SSM-InstanceProfile"  # Default value for convenience
 
 Resources:
+  # ------------------------------------------------------------#
+  #  VPC
+  # ------------------------------------------------------------#
   MyVPC:
     Type: AWS::EC2::VPC
     Properties:
@@ -17,6 +24,9 @@ Resources:
         - Key: Name
           Value: MyVPC
 
+  # ------------------------------------------------------------#
+  #  Public Subnet
+  # ------------------------------------------------------------#
   PublicSubnet:
     Type: AWS::EC2::Subnet
     Properties:
@@ -27,6 +37,9 @@ Resources:
         - Key: Name
           Value: PublicSubnet
 
+  # ------------------------------------------------------------#
+  #  Internet Gateway
+  # ------------------------------------------------------------#
   InternetGateway:
     Type: AWS::EC2::InternetGateway
     Properties:
@@ -34,12 +47,18 @@ Resources:
         - Key: Name
           Value: MyInternetGateway
 
+  # ------------------------------------------------------------#
+  #  Attach Internet Gateway to VPC
+  # ------------------------------------------------------------#
   AttachGateway:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
       VpcId: !Ref MyVPC
       InternetGatewayId: !Ref InternetGateway
 
+  # ------------------------------------------------------------#
+  #  Public Route Table
+  # ------------------------------------------------------------#
   PublicRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
@@ -48,6 +67,9 @@ Resources:
         - Key: Name
           Value: PublicRouteTable
 
+  # ------------------------------------------------------------#
+  #  Public Route
+  # ------------------------------------------------------------#
   PublicRoute:
     Type: AWS::EC2::Route
     Properties:
@@ -55,12 +77,18 @@ Resources:
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref InternetGateway
 
+  # ------------------------------------------------------------#
+  #  Subnet Route Table Association
+  # ------------------------------------------------------------#
   SubnetRouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId: !Ref PublicSubnet
       RouteTableId: !Ref PublicRouteTable
 
+  # ------------------------------------------------------------#
+  #  EC2 Security Group
+  # ------------------------------------------------------------#
   EC2SecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -79,6 +107,9 @@ Resources:
         - IpProtocol: -1
           CidrIp: 0.0.0.0/0
 
+  # ------------------------------------------------------------#
+  #  EC2 Instance
+  # ------------------------------------------------------------#
   EC2Instance:
     Type: AWS::EC2::Instance
     Properties:

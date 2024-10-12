@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation template for EC2 instance with SSM support
+
+Resources:
+  # ------------------------------------------------------------#
+  #  EC2 Instance
+  # ------------------------------------------------------------#
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t3.nano
+      IamInstanceProfile: !ImportValue EC2SSMRoleInstanceProfileName
+      SecurityGroupIds:
+        - !ImportValue EC2SecurityGroupId
+      SubnetId: !ImportValue PublicSubnetId
+      ImageId: ami-0ef29ab52ff72213b  # Specify your AMI ID
+      Tags:
+        - Key: Name
+          Value: MyEC2Instance
+
+Outputs:
+  InstanceId:
+    Value: !GetAtt EC2Instance.InstanceId

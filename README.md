@@ -111,6 +111,16 @@ aws ssm start-session --target $INSTANCE_ID
 
 ## TIPS
 
+### スタックの更新
+
+```bash
+aws cloudformation update-stack --stack-name ec2-ssm-stack --template-body file://ec2-ssm-stack.yml --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM
+
+aws cloudformation update-stack --stack-name ec2-ssm-role-stack --template-body file://role/ec2-ssm-role.yml --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM
+
+aws cloudformation update-stack --stack-name ec2-ssm-stack --template-body file://ec2-ssm-stack.yml --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM
+```
+
 ### スタックの削除
 
 ```bash

@@ -7,6 +7,39 @@ AWS CLIを使用してCloudFormationスタックを作成し、そのスタッ�
 - AWS CLIがインストールされ設定済みであること
 - AWS CLIにSSMプラグインがインストールされていること
 
+## 構成
+
+```mermaid
+architecture-beta
+    group vpc(cloud)[VPC]
+
+    service igw(internet)[Internet Gateway] in vpc
+    service routeTable(cloud)[Route Table] in vpc
+
+    group public_subnet(cloud)[Public Subnet] in vpc
+    service ec2Instance(server)[EC2 Instance] in public_subnet
+
+    igw:R -- L:routeTable
+    routeTable:R -- L:ec2Instance
+```
+
+### リソース
+
+```bash
+CloudFormation Stacks
+├── Network Stack
+│   ├── VPC
+│   ├── Public Subnet
+│   ├── Internet Gateway
+│   ├── Route Table
+│   ├── Route
+│   ├── Subnet Route Table Association
+│   └── Security Group
+└── EC2 Stack
+    ├── EC2 Instance
+    └── Security Group (from Network Stack)
+```
+
 ## 手順
 
 ### 1. IAMロールの作成
